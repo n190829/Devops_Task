@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build Docker Image') {
             steps {
-                bat'docker build -t madhu794/devopstask:latest .'
+               bat 'docker push madhu794/devopstask:latest'
             }
         }
 
