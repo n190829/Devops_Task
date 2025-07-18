@@ -33,10 +33,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Docker image built and pushed successfully!"
+            echo "Docker image built and pushed successfully!"
         }
         failure {
-            echo "❌ Build or push failed. Please check credentials or Docker Hub access."
+            echo "Build or push failed. Please check credentials or Docker Hub access."
         }
     }
 }
