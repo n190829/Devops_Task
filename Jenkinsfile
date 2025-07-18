@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Git Checkout') {
             steps {
-                git 'https://github.com/n190829/Devops_Task'
+                git branch: 'main', url: 'https://github.com/n190829/Devops_Task'
             }
         }
 
@@ -16,7 +16,9 @@ pipeline {
 
         stage('Docker Login') {
             steps {
-                bat 'docker login -u madhu794'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    bat 'echo %DOCKER_PASS% | docker login -u %DOCKER_USER% --password-stdin'
+                }
             }
         }
 
