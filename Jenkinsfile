@@ -2,14 +2,12 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = 'madhu794/devops_task_image'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-creds') // Jenkins credentials ID
+        IMAGE_NAME = 'madhu794/devops_task_image:latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Ensure correct branch and URL
                 git branch: 'main', url: 'https://github.com/n190829/Devops_Task.git'
             }
         }
@@ -25,8 +23,8 @@ pipeline {
         stage('Docker Login & Push') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-                        dockerImage.push('latest')
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                        dockerImage.push()
                     }
                 }
             }
@@ -35,10 +33,10 @@ pipeline {
 
     post {
         success {
-            echo "✅ Build and push successful!"
+            echo "✅ Docker image built and pushed successfully!"
         }
         failure {
-            echo "❌ Build or push failed!"
+            echo "❌ Build or push failed. Please check credentials or Docker Hub access."
         }
     }
 }
