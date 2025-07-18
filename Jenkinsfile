@@ -2,35 +2,27 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Repository') {
+        stage('Git Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/n190829/Devops_Task.git'
+                git 'https://github.com/n190829/Devops_Task'
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Docker Build') {
             steps {
-               bat 'docker push madhu794/devopstask:latest'
+                bat 'docker build -t madhu794/devopstask .'
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Docker Login') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                    sh 'docker push madhu794/devopstask:latest'
-                }
+                bat 'docker login -u madhu794'
             }
         }
 
-        stage('Run Container (Optional)') {
+        stage('Docker Push') {
             steps {
-                // Stop any container using port 8080
-                sh '''
-                    docker ps -q --filter "publish=8080" | grep -q . && docker ps -q --filter "publish=8080" | xargs docker stop || echo "No container on port 8080"
-                '''
-                // Start fresh container
-                sh 'docker run -d -p 8080:80 madhu794/devopstask:latest'
+                bat 'docker push madhu794/devopstask:latest'
             }
         }
     }
